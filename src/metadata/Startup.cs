@@ -7,6 +7,23 @@ using Microsoft.Extensions.Logging;
 using Funq;
 using ServiceStack;
 
+namespace dtos
+{
+    [Api("Test request")]
+    [Route("/test/{Input}", "GET")]
+    [Route("/test")]
+    public class TestRequest : IReturn<TestResponse>
+    {
+        [ApiMember(Name = "Parameter name", Description = "Parameter Description",
+            ParameterType = "body", DataType = "string", IsRequired = true)]
+        public string Input { get; set; }
+    }
+    public class TestResponse
+    {
+        public string Output { get; set; }
+    }    
+}
+
 namespace scratch
 {
     public class Startup
@@ -50,26 +67,12 @@ namespace scratch
         public string Result { get; set; }
     }
 
-    [Api("Test request")]
-    [Route("/test/{Input}", "GET")]
-    [Route("/test")]
-    public class TestRequest : IReturn<TestResponse>
-    {
-        [ApiMember(Name = "Parameter name", Description = "Parameter Description",
-            ParameterType = "body", DataType = "string", IsRequired = true)]
-        public string Input { get; set; }
-    }
-    public class TestResponse
-    {
-        public string Output { get; set; }
-    }
-
     public class MyServices : Service
     {
         public object Any(Hello request) =>
             new HelloResponse { Result = $"Hello, {request.Name}!" };
 
-        public object Any(TestRequest request) => new TestResponse();
+        public object Any(dtos.TestRequest request) => new dtos.TestResponse();
     }
 
     public class AppHost : AppHostBase
